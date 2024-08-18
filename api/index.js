@@ -12,6 +12,8 @@ import AuthRoute from "./routes/auth.route.js";
 import postRoute from "./routes/post.route.js";
 import commentRoutes from "./routes/comment.route.js"
 
+import path from "path";
+
 dotenv.config();
 
 app.use(morgan("dev"));
@@ -35,7 +37,11 @@ app.use("/api/auth", AuthRoute);
 app.use("/api/post", postRoute);
 app.use('/api/comment', commentRoutes);
 
+app.use(express.static(path.join(_dirname, "ui/dist")));
 
+app.use("*",(req,res)=>{
+       res.sendFile(path.join(_dirname,"ui", "dist","index.html"));
+})
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
@@ -46,5 +52,7 @@ app.use((err, req, res, next) => {
     message,
   });
 });
+
+const _dirname = path.resolve()
 
 DB_Config();
